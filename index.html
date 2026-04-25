@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="description" content="Rádio Caeté - Conectada com a Natureza e com o Meio Ambiente. A melhor programação de Caeté-MG e região.">
+<meta name="theme-color" content="#00796b">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Rádio Caeté">
+<title>Rádio Caeté - Ao Vivo</title>
+
+<!-- PWA: Progressive Web App - Manifesto para instalação como app -->
+<link rel="manifest" href="manifest.json">
+
+<!-- Favicon: ícone pequeno que aparece na aba do navegador -->
+<link rel="icon" type="image/png" href="favicon.png">
+<!-- Apple Touch Icon: ícone para dispositivos Apple (iPhone/iPad) -->
+<link rel="apple-touch-icon" href="icon-192.png">
+
+<!-- Google Fonts: fonte Outfit para visual mais profissional que Arial -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<!-- Font Awesome: biblioteca de ícones (play, pause, volume, redes sociais) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+  /* ===== VARIÁVEIS CSS: cores e tamanhos centralizados para fácil manutenção ===== */
+  :root {
+    --verde-escuro: #004d40;
+    --verde-medio: #00796b;
+    --verde-claro: #26a69a;
+    --verde-brilho: #80cbc4;
+    --branco: #ffffff;
+    --branco-translucido: rgba(255,255,255,0.12);
+    --branco-borda: rgba(255,255,255,0.2);
+    --sombra: rgba(0,0,0,0.3);
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    /* Gradiente de fundo inspirado na natureza de Caeté-MG */
+    background: linear-gradient(160deg, #003d33 0%, #00695c 40%, #004d40 70%, #002d26 100%);
+    font-family: 'Outfit', Arial, sans-serif;
+    color: var(--branco);
+    padding: 20px;
+    /* Textura sutil de pontos para dar profundidade ao fundo */
+    background-image:
+      radial-gradient(circle at 20% 20%, rgba(38,166,154,0.15) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(0,77,64,0.4) 0%, transparent 50%),
+      linear-gradient(160deg, #003d33 0%, #00695c 40%, #004d40 70%, #002d26 100%);
+  }
+
+  /* ===== CARD PRINCIPAL DO PLAYER ===== */
+  .card {
+    background: var(--branco-translucido);
+    backdrop-filter: blur(20px); /* Efeito de vidro fosco (glassmorphism) */
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--branco-borda);
+    border-radius: 24px;
+    padding: 32px 28px;
+    width: 100%;
+    max-width: 360px;
+    text-align: center;
+    box-shadow: 0 20px 60px var(--sombra), 0 0 0 1px rgba(255,255,255,0.05) inset;
+    animation: entrar 0.6s ease-out; /* Animação de entrada suave */
+  }
+
+  @keyframes entrar {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ===== LOGO ===== */
+  .logo-container {
+    margin-bottom: 20px;
+  }
+
+  .logo {
+    width: 100%;
+    max-width: 260px;
+    height: auto;
+    border-radius: 12px;
+    /* Sombra esverdeada para combinar com o tema */
+    filter: drop-shadow(0 4px 16px rgba(0,121,107,0.5));
+  }
+
+  /* ===== SLOGAN ===== */
+  .slogan {
+    font-size: 12px;
+    font-weight: 300;
+    letter-spacing: 0.08em;
+    color: var(--verde-brilho);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+    opacity: 0.9;
+  }
+
+  /* ===== INDICADOR "AO VIVO" ===== */
+  .ao-vivo {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(229, 57, 53, 0.2);
+    border: 1px solid rgba(229, 57, 53, 0.4);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: #ff8a80;
+    margin-bottom: 20px;
+  }
+
+  /* Ponto vermelho piscando que indica transmissão ao vivo */
+  .ao-vivo .dot {
+    width: 7px;
+    height: 7px;
+    background: #ef5350;
+    border-radius: 50%;
+    animation: piscar 1.4s ease-in-out infinite;
+  }
+
+  @keyframes piscar {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.2; }
+  }
+
+  /* ===== ÁREA DO PLAYER: botão + volume ===== */
+  .player-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+
+  /* ===== BOTÃO PLAY/PAUSE ===== */
+  .btn-play {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    border: 2px solid var(--branco-borda);
+    background: linear-gradient(135deg, var(--verde-medio), var(--verde-escuro));
+    color: var(--branco);
+    font-size: 26px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3), 0 0 0 0 rgba(38,166,154,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .btn-play:hover {
+    transform: scale(1.08);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.4), 0 0 0 8px rgba(38,166,154,0.2);
+  }
+
+  .btn-play:active {
+    transform: scale(0.96);
+  }
+
+  /* Efeito de pulso ao tocar (classe adicionada via JS) */
+  .btn-play.tocando {
+    animation: pulso 2s ease-in-out infinite;
+  }
+
+  @keyframes pulso {
+    0%   { box-shadow: 0 8px 24px rgba(0,0,0,0.3), 0 0 0 0 rgba(38,166,154,0.5); }
+    70%  { box-shadow: 0 8px 24px rgba(0,0,0,0.3), 0 0 0 14px rgba(38,166,154,0); }
+    100% { box-shadow: 0 8px 24px rgba(0,0,0,0.3), 0 0 0 0 rgba(38,166,154,0); }
+  }
+
+  /* ===== CONTROLE DE VOLUME ===== */
+  .volume-wrap {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .volume-wrap i {
+    font-size: 14px;
+    opacity: 0.7;
+    flex-shrink: 0;
+  }
+
+  /* Barra de volume estilizada */
+  input[type=range] {
+    flex: 1;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 4px;
+    border-radius: 2px;
+    background: linear-gradient(to right, var(--verde-claro) 0%, var(--verde-claro) 70%, var(--branco-borda) 70%);
+    outline: none;
+    cursor: pointer;
+  }
+
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--branco);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    cursor: pointer;
+    transition: transform 0.15s;
+  }
+
+  input[type=range]::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+  }
+
+  /* ===== MENSAGEM ROTATIVA (o que está tocando) ===== */
+  .now-playing {
+    font-size: 13px;
+    font-weight: 400;
+    opacity: 0.85;
+    min-height: 20px;
+    margin-bottom: 22px;
+    transition: opacity 0.4s ease;
+  }
+
+  /* ===== DIVISOR ===== */
+  .divisor {
+    width: 100%;
+    height: 1px;
+    background: var(--branco-borda);
+    margin-bottom: 20px;
+  }
+
+  /* ===== REDES SOCIAIS ===== */
+  .social {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+  }
+
+  .social a {
+    color: var(--branco);
+    font-size: 22px;
+    opacity: 0.75;
+    transition: opacity 0.2s, transform 0.2s;
+    text-decoration: none;
+  }
+
+  .social a:hover {
+    opacity: 1;
+    transform: translateY(-3px);
+  }
+
+  /* ===== RODAPÉ PEQUENO ===== */
+  .footer-text {
+    margin-top: 20px;
+    font-size: 10px;
+    opacity: 0.4;
+    letter-spacing: 0.05em;
+  }
+
+  /* ===== DICA DE INSTALAÇÃO DO APP ===== */
+  /* Aparece discretamente abaixo do rodapé, detectando Android ou iOS */
+  .instalar-dica {
+    margin-top: 14px;
+    font-size: 11px;
+    color: var(--verde-brilho);
+    opacity: 0.75;
+    line-height: 1.5;
+    border-top: 1px solid var(--branco-borda);
+    padding-top: 12px;
+    text-align: center;
+    display: none; /* JS decide quando mostrar */
+  }
+
+  .instalar-dica .dica-titulo {
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    margin-bottom: 3px;
+    color: var(--branco);
+    opacity: 0.6;
+  }
+</style>
+</head>
+<body>
+
+<!-- Elemento de áudio oculto: é o coração do player -->
+<audio id="audio" preload="none">
+  <source src="https://stm11.voxhd.com.br:11404/stream/" type="audio/mpeg">
+</audio>
+
+<div class="card">
+
+  <!-- LOGO DA RÁDIO -->
+  <div class="logo-container">
+    <img class="logo" src="logo.png" alt="Rádio Caeté - Logo" width="260" height="145">
+  </div>
+
+  <!-- SLOGAN -->
+  <p class="slogan">Conectada com a Natureza e com o Meio Ambiente</p>
+
+  <!-- BADGE AO VIVO -->
+  <div class="ao-vivo">
+    <span class="dot"></span>
+    AO VIVO
+  </div>
+
+  <!-- PLAYER: botão de play e controle de volume -->
+  <div class="player-area">
+    <button class="btn-play" id="btnPlay" aria-label="Tocar / Pausar">
+      <i class="fas fa-play" id="iconePlay"></i>
+    </button>
+
+    <div class="volume-wrap">
+      <i class="fas fa-volume-down"></i>
+      <input type="range" id="volume" min="0" max="100" value="70" aria-label="Volume">
+      <i class="fas fa-volume-up"></i>
+    </div>
+  </div>
+
+  <!-- MENSAGEM ROTATIVA: troca a cada 5 segundos -->
+  <p class="now-playing" id="nowPlaying">🎧 Rádio Caeté - Ao Vivo</p>
+
+  <div class="divisor"></div>
+
+  <!-- LINKS DAS REDES SOCIAIS -->
+  <div class="social">
+    <a href="https://www.instagram.com/marcobhfox" target="_blank" rel="noopener" aria-label="Instagram">
+      <i class="fab fa-instagram"></i>
+    </a>
+    <a href="https://wa.me/5531985737468" target="_blank" rel="noopener" aria-label="WhatsApp">
+      <i class="fab fa-whatsapp"></i>
+    </a>
+  </div>
+
+  <p class="footer-text">Caeté-MG &nbsp;•&nbsp; Rádio Caeté © 2025</p>
+
+  <!-- DICA DE INSTALAÇÃO: preenchida via JS conforme o dispositivo -->
+  <div class="instalar-dica" id="dicaInstalar"></div>
+
+</div>
+
+<script>
+  const audio    = document.getElementById('audio');
+  const btnPlay  = document.getElementById('btnPlay');
+  const icone    = document.getElementById('iconePlay');
+  const volume   = document.getElementById('volume');
+  const nowP     = document.getElementById('nowPlaying');
+
+  let tocando = false;
+
+  // ===== CONTROLE PLAY / PAUSE =====
+  btnPlay.addEventListener('click', () => {
+    if (tocando) {
+      audio.pause();
+      icone.className = 'fas fa-play';
+      btnPlay.classList.remove('tocando');
+    } else {
+      audio.play().catch(() => {
+        // Fallback: se o navegador bloqueou o autoplay, mostra mensagem
+        nowP.textContent = '⚠️ Clique play para ouvir';
+      });
+      icone.className = 'fas fa-pause';
+      btnPlay.classList.add('tocando');
+    }
+    tocando = !tocando;
+  });
+
+  // ===== CONTROLE DE VOLUME =====
+  audio.volume = volume.value / 100;
+
+  volume.addEventListener('input', () => {
+    audio.volume = volume.value / 100;
+    // Atualiza a cor da barra de volume proporcionalmente
+    const pct = volume.value + '%';
+    volume.style.background = `linear-gradient(to right, #26a69a 0%, #26a69a ${pct}, rgba(255,255,255,0.2) ${pct})`;
+  });
+
+  // ===== MENSAGENS ROTATIVAS =====
+  // Personalize estas mensagens com a identidade da Rádio Caeté!
+  const mensagens = [
+    '🎧 Rádio Caeté - Ao Vivo',
+    '🌿 Conectada com a Natureza de Caeté-MG',
+    '🎶 MPB, Sertanejo e Flash Back pra você',
+    '📻 A voz de Caeté e da região',
+    '🌳 Fazendo história junto com o seu povo',
+  ];
+
+  let idx = 0;
+  setInterval(() => {
+    nowP.style.opacity = '0';
+    setTimeout(() => {
+      idx = (idx + 1) % mensagens.length;
+      nowP.textContent = mensagens[idx];
+      nowP.style.opacity = '0.85';
+    }, 400);
+  }, 5000);
+
+  // ===== DICA DE INSTALAÇÃO DO APP =====
+  // Detecta automaticamente se é iOS (Apple) ou Android e mostra
+  // a instrução correta — discreta, apenas para quem ainda não instalou
+  const dica = document.getElementById('dicaInstalar');
+  const ua = navigator.userAgent; // userAgent: identificação do navegador/dispositivo
+
+  const isIOS     = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
+  const isAndroid = /Android/.test(ua);
+  // isPWA: verifica se já está rodando como app instalado (standalone = tela cheia sem barra do navegador)
+  const isPWA     = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+
+  if (!isPWA && dica) {
+    if (isIOS) {
+      // Instrução para iPhone/iPad via Safari
+      dica.innerHTML = `
+        <div class="dica-titulo">📲 Instale no seu iPhone</div>
+        No Safari: toque em <strong>Compartilhar ↑</strong> e depois em
+        <strong>"Adicionar à Tela de Início"</strong>
+      `;
+      dica.style.display = 'block';
+    } else if (isAndroid) {
+      // Instrução para Android via Chrome
+      dica.innerHTML = `
+        <div class="dica-titulo">📲 Instale no seu Android</div>
+        No Chrome: toque nos <strong>3 pontinhos ⋮</strong> e depois em
+        <strong>"Adicionar à tela inicial"</strong>
+      `;
+      dica.style.display = 'block';
+    }
+  }
+
+  // ===== PWA: REGISTRO DO SERVICE WORKER =====
+  // Service Worker (SW): script que roda em segundo plano,
+  // permite que o PWA funcione offline e seja instalável
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('service-worker.js')
+      .then(() => console.log('✅ Service Worker registrado'))
+      .catch(e => console.warn('SW não registrado:', e));
+  }
+</script>
+
+</body>
+</html>

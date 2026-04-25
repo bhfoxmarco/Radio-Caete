@@ -1,0 +1,26 @@
+{
+  "name": "Rádio Caeté",
+  "short_name": "Rádio Caeté",
+  "description": "Rádio Caeté - Conectada com a Natureza e com o Meio Ambiente. A voz de Caeté-MG e região.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#004d40",
+  "theme_color": "#00796b",
+  "orientation": "portrait",
+  "lang": "pt-BR",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["music", "entertainment"]
+}
