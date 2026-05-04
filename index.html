@@ -392,35 +392,30 @@
   });
 
   // ===== NOME DA MÚSICA TOCANDO =====
-  // O navegador bloqueia requisições diretas a outros servidores por CORS.
-  // Solução: usar um proxy público que faz a requisição no lugar do navegador.
-  // Testamos dois proxies — se um falhar, tenta o outro.
-  const musicaEl   = document.getElementById('musicaTocando');
-  const MUSICA_URL  = 'https://stm11.voxhd.com.br:11404/currentsong?sid=1';
-  const PROXY1      = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(MUSICA_URL);
-  const PROXY2      = 'https://corsproxy.io/?' + encodeURIComponent(MUSICA_URL);
+  // Usa proxy jsonp.afeld.me que é compatível com Chrome e Safari
+  const musicaEl  = document.getElementById('musicaTocando');
+  const MUSICA_URL = 'https://stm11.voxhd.com.br:11404/currentsong?sid=1';
+  const PROXY_URL  = 'https://corsproxy.io/?' + encodeURIComponent(MUSICA_URL);
 
   async function buscarMusica() {
-    // Tenta 1: direto
-    for (const url of [MUSICA_URL, PROXY1, PROXY2]) {
-      try {
-        const resp  = await fetch(url, { cache: 'no-store' });
-        const texto = await resp.text();
-        if (texto && texto.trim() !== '' && texto.trim().length > 3) {
-          musicaEl.style.opacity = '0';
-          setTimeout(() => {
-            musicaEl.textContent = 'Tocando Agora: ' + texto.trim();
-            musicaEl.style.opacity = '0.9';
-          }, 400);
-          return; // Sucesso — para de tentar
-        }
-      } catch (err) {
-        console.warn('Tentativa falhou, tentando próxima...', url);
+    try {
+      const resp  = await fetch(PROXY_URL, {
+        cache: 'no-store',
+        headers: { 'x-requested-with': 'XMLHttpRequest' }
+      });
+      const texto = await resp.text();
+      if (texto && texto.trim().length > 2 && !texto.includes('{')) {
+        musicaEl.style.opacity = '0';
+        setTimeout(() => {
+          musicaEl.textContent = 'Tocando Agora: ' + texto.trim();
+          musicaEl.style.opacity = '0.9';
+        }, 400);
       }
+    } catch (err) {
+      console.warn('Erro ao buscar música:', err);
     }
   }
 
-  // Busca imediatamente ao carregar e depois a cada 15 segundos
   buscarMusica();
   setInterval(buscarMusica, 15000);
 
