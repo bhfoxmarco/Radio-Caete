@@ -97,45 +97,31 @@
     filter: drop-shadow(0 4px 16px rgba(0,121,107,0.5));
   }
 
-  /* ===== SLOGAN ===== */
-  .slogan {
-    font-size: 12px;
-    font-weight: 300;
-    letter-spacing: 0.08em;
+  /* ===== SLIDE DE PATROCINADORES ===== */
+  .patrocinadores-wrap {
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .apoio-label {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
     color: var(--verde-brilho);
     text-transform: uppercase;
-    margin-bottom: 4px;
-    opacity: 0.9;
+    opacity: 0.6;
+    margin-bottom: 5px;
   }
 
-  /* ===== INDICADOR "AO VIVO" ===== */
-  .ao-vivo {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: rgba(229, 57, 53, 0.2);
-    border: 1px solid rgba(229, 57, 53, 0.4);
-    border-radius: 20px;
-    padding: 4px 12px;
-    font-size: 11px;
+  .patrocinador-nome {
+    font-size: 12px;
     font-weight: 600;
-    letter-spacing: 0.1em;
-    color: #ff8a80;
-    margin-bottom: 20px;
-  }
-
-  /* Ponto vermelho piscando que indica transmissão ao vivo */
-  .ao-vivo .dot {
-    width: 7px;
-    height: 7px;
-    background: #ef5350;
-    border-radius: 50%;
-    animation: piscar 1.4s ease-in-out infinite;
-  }
-
-  @keyframes piscar {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.2; }
+    letter-spacing: 0.08em;
+    color: var(--branco);
+    text-transform: uppercase;
+    opacity: 0.9;
+    transition: opacity 0.5s ease;
+    min-height: 18px;
   }
 
   /* ===== ÁREA DO PLAYER: botão + volume ===== */
@@ -225,14 +211,21 @@
     transform: scale(1.2);
   }
 
-  /* ===== MENSAGEM ROTATIVA (o que está tocando) ===== */
-  .now-playing {
-    font-size: 13px;
+  /* ===== NOME DA MÚSICA TOCANDO ===== */
+  .musica-tocando {
+    font-size: 12px;
     font-weight: 400;
-    opacity: 0.85;
-    min-height: 20px;
+    color: var(--verde-brilho);
+    opacity: 0.9;
+    min-height: 18px;
+    margin-top: 4px;
     margin-bottom: 22px;
     transition: opacity 0.4s ease;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    padding: 0 4px;
   }
 
   /* ===== DIVISOR ===== */
@@ -309,13 +302,10 @@
     <img class="logo" src="logo.png" alt="Rádio Caeté - Logo" width="260" height="145">
   </div>
 
-  <!-- SLOGAN -->
-  <p class="slogan">Conectada com a Natureza e com o Meio Ambiente</p>
-
-  <!-- BADGE AO VIVO -->
-  <div class="ao-vivo">
-    <span class="dot"></span>
-    AO VIVO
+  <!-- SLIDE DE PATROCINADORES -->
+  <div class="patrocinadores-wrap">
+    <div class="apoio-label">Apoio</div>
+    <div class="patrocinador-nome" id="patrocinadorNome">SUPERMERCADO BH</div>
   </div>
 
   <!-- PLAYER: botão de play e controle de volume -->
@@ -331,12 +321,12 @@
     </div>
   </div>
 
-  <!-- MENSAGEM ROTATIVA: troca a cada 5 segundos -->
-  <p class="now-playing" id="nowPlaying">🎧 Rádio Caeté - Ao Vivo</p>
+  <!-- NOME DA MÚSICA TOCANDO: atualiza a cada 15 segundos -->
+  <p class="musica-tocando" id="musicaTocando">🎧 Rádio Caeté - Ao Vivo</p>
 
   <div class="divisor"></div>
 
-  <!-- LINKS DAS REDES SOCIAIS -->
+  <!-- LINKS DAS REDES SOCIAIS + COMPARTILHAR -->
   <div class="social">
     <a href="https://www.instagram.com/marcobhfox" target="_blank" rel="noopener" aria-label="Instagram">
       <i class="fab fa-instagram"></i>
@@ -344,7 +334,20 @@
     <a href="https://wa.me/5531985737468" target="_blank" rel="noopener" aria-label="WhatsApp">
       <i class="fab fa-whatsapp"></i>
     </a>
+    <a href="#" id="btnCompartilhar" aria-label="Compartilhar a Rádio Caeté">
+      <i class="fas fa-share-alt"></i>
+    </a>
   </div>
+
+  <!-- MENSAGEM DE CONFIRMAÇÃO DE CÓPIA (aparece só no desktop) -->
+  <div id="msgCopiado" style="
+    display:none;
+    font-size:11px;
+    color:var(--verde-brilho);
+    margin-top:8px;
+    opacity:0;
+    transition: opacity 0.3s ease;
+  ">✅ Link copiado!</div>
 
   <p class="footer-text">Caeté-MG &nbsp;•&nbsp; Rádio Caeté © 2025</p>
 
@@ -358,7 +361,6 @@
   const btnPlay  = document.getElementById('btnPlay');
   const icone    = document.getElementById('iconePlay');
   const volume   = document.getElementById('volume');
-  const nowP     = document.getElementById('nowPlaying');
 
   let tocando = false;
 
@@ -389,25 +391,97 @@
     volume.style.background = `linear-gradient(to right, #26a69a 0%, #26a69a ${pct}, rgba(255,255,255,0.2) ${pct})`;
   });
 
-  // ===== MENSAGENS ROTATIVAS =====
-  // Personalize estas mensagens com a identidade da Rádio Caeté!
-  const mensagens = [
-    '🎧 Rádio Caeté - Ao Vivo',
-    '🌿 Conectada com a Natureza de Caeté-MG',
-    '🎶 MPB, Sertanejo e Flash Back pra você',
-    '📻 A voz de Caeté e da região',
-    '🌳 Fazendo história junto com o seu povo',
+  // ===== NOME DA MÚSICA TOCANDO =====
+  // Busca o nome da música no servidor Shoutcast via status-json.xsl
+  // CORS: Cross-Origin Resource Sharing — política de segurança do navegador
+  // que pode bloquear requisições entre domínios diferentes.
+  // Usamos um proxy público para contornar isso.
+  const musicaEl = document.getElementById('musicaTocando');
+  const STATUS_URL = 'https://stm11.voxhd.com.br:11404/status-json.xsl';
+
+  async function buscarMusica() {
+    try {
+      const resp = await fetch(STATUS_URL, { cache: 'no-store' });
+      const data = await resp.json();
+      // O Shoutcast 2.x retorna os dados dentro de "icestats" > "source"
+      const fonte = data?.icestats?.source;
+      const titulo = Array.isArray(fonte)
+        ? fonte[0]?.title
+        : fonte?.title;
+
+      if (titulo && titulo.trim() !== '') {
+        musicaEl.style.opacity = '0';
+        setTimeout(() => {
+          musicaEl.textContent = '🎵 ' + titulo;
+          musicaEl.style.opacity = '0.9';
+        }, 400);
+      }
+    } catch (err) {
+      // Se falhar, mantém o texto padrão silenciosamente
+      console.warn('Não foi possível buscar a música:', err);
+    }
+  }
+
+  // Busca imediatamente ao carregar e depois a cada 15 segundos
+  buscarMusica();
+  setInterval(buscarMusica, 15000);
+
+  // ===== BOTÃO COMPARTILHAR =====
+  // Usa a Web Share API (API nativa de compartilhamento) no celular
+  // No desktop, copia o link para a área de transferência
+  const btnCompartilhar = document.getElementById('btnCompartilhar');
+  const msgCopiado      = document.getElementById('msgCopiado');
+
+  btnCompartilhar.addEventListener('click', async (e) => {
+    e.preventDefault();
+    const dadosCompartilhar = {
+      title: 'Rádio Caeté',
+      text:  '🎙️ Ouça a Rádio Caeté ao vivo — a voz de Caeté e região!',
+      url:   'https://radiocaete.com.br'
+    };
+
+    if (navigator.share) {
+      // Celular: abre o menu nativo do sistema (WhatsApp, SMS, etc.)
+      try {
+        await navigator.share(dadosCompartilhar);
+      } catch (err) {
+        // Usuário cancelou o compartilhamento — sem ação necessária
+      }
+    } else {
+      // Desktop: copia o link para a área de transferência (clipboard)
+      try {
+        await navigator.clipboard.writeText(dadosCompartilhar.url);
+        msgCopiado.style.display = 'block';
+        setTimeout(() => msgCopiado.style.opacity = '1', 10);
+        setTimeout(() => {
+          msgCopiado.style.opacity = '0';
+          setTimeout(() => msgCopiado.style.display = 'none', 300);
+        }, 2500);
+      } catch (err) {
+        console.warn('Erro ao copiar link:', err);
+      }
+    }
+  });
+
+  // ===== SLIDE DE PATROCINADORES =====
+  // Lista de patrocinadores — máximo 30 caracteres cada
+  const patrocinadores = [
+    'SUPERMERCADO BH',
+    'JORNAL OPINIÃO',
+    'CLÍNICA VET. CLINVET',
   ];
 
-  let idx = 0;
+  const patrocinadorEl = document.getElementById('patrocinadorNome');
+  let idxP = 0;
+
   setInterval(() => {
-    nowP.style.opacity = '0';
+    patrocinadorEl.style.opacity = '0';
     setTimeout(() => {
-      idx = (idx + 1) % mensagens.length;
-      nowP.textContent = mensagens[idx];
-      nowP.style.opacity = '0.85';
-    }, 400);
-  }, 5000);
+      idxP = (idxP + 1) % patrocinadores.length;
+      patrocinadorEl.textContent = patrocinadores[idxP];
+      patrocinadorEl.style.opacity = '0.9';
+    }, 500);
+  }, 4000);
 
   // ===== DICA DE INSTALAÇÃO DO APP =====
   // Detecta automaticamente se é iOS (Apple) ou Android e mostra
