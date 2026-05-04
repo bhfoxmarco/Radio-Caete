@@ -392,25 +392,31 @@
   });
 
   // ===== NOME DA MÚSICA TOCANDO =====
-  // Usa o endpoint currentsong?sid=1 do Shoutcast que retorna
-  // o nome da música em texto puro — simples e sem problemas de CORS.
-  // sid=1 significa: stream ID número 1 — canal principal da rádio.
+  // O navegador bloqueia requisições diretas a outros servidores por CORS.
+  // Solução: usar um proxy público que faz a requisição no lugar do navegador.
+  // Testamos dois proxies — se um falhar, tenta o outro.
   const musicaEl   = document.getElementById('musicaTocando');
-  const MUSICA_URL = 'https://stm11.voxhd.com.br:11404/currentsong?sid=1';
+  const MUSICA_URL  = 'https://stm11.voxhd.com.br:11404/currentsong?sid=1';
+  const PROXY1      = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(MUSICA_URL);
+  const PROXY2      = 'https://corsproxy.io/?' + encodeURIComponent(MUSICA_URL);
 
   async function buscarMusica() {
-    try {
-      const resp  = await fetch(MUSICA_URL, { cache: 'no-store' });
-      const texto = await resp.text();
-      if (texto && texto.trim() !== '') {
-        musicaEl.style.opacity = '0';
-        setTimeout(() => {
-          musicaEl.textContent = 'Tocando Agora: ' + texto.trim();
-          musicaEl.style.opacity = '0.9';
-        }, 400);
+    // Tenta 1: direto
+    for (const url of [MUSICA_URL, PROXY1, PROXY2]) {
+      try {
+        const resp  = await fetch(url, { cache: 'no-store' });
+        const texto = await resp.text();
+        if (texto && texto.trim() !== '' && texto.trim().length > 3) {
+          musicaEl.style.opacity = '0';
+          setTimeout(() => {
+            musicaEl.textContent = 'Tocando Agora: ' + texto.trim();
+            musicaEl.style.opacity = '0.9';
+          }, 400);
+          return; // Sucesso — para de tentar
+        }
+      } catch (err) {
+        console.warn('Tentativa falhou, tentando próxima...', url);
       }
-    } catch (err) {
-      console.warn('Não foi possível buscar a música:', err);
     }
   }
 
@@ -518,4 +524,3 @@
 
 </body>
 </html>
-
