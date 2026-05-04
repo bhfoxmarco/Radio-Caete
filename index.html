@@ -322,7 +322,7 @@
   </div>
 
   <!-- NOME DA MÚSICA TOCANDO: atualiza a cada 15 segundos -->
-  <p class="musica-tocando" id="musicaTocando">🎧 Rádio Caeté - Ao Vivo</p>
+  <p class="musica-tocando" id="musicaTocando">Tocando Agora: Rádio Caeté</p>
 
   <div class="divisor"></div>
 
@@ -394,31 +394,48 @@
   // ===== NOME DA MÚSICA TOCANDO =====
   // Busca o nome da música no servidor Shoutcast via status-json.xsl
   // CORS: Cross-Origin Resource Sharing — política de segurança do navegador
-  // que pode bloquear requisições entre domínios diferentes.
-  // Usamos um proxy público para contornar isso.
-  const musicaEl = document.getElementById('musicaTocando');
+  // que bloqueia requisições entre domínios diferentes.
+  // Estratégia: tenta direto primeiro, se falhar usa proxy CORS público.
+  const musicaEl  = document.getElementById('musicaTocando');
   const STATUS_URL = 'https://stm11.voxhd.com.br:11404/status-json.xsl';
+  // Proxy CORS: servidor intermediário que faz a requisição no lugar do navegador
+  const PROXY_URL  = 'https://corsproxy.io/?' + encodeURIComponent(STATUS_URL);
+
+  function atualizarMusica(titulo) {
+    if (titulo && titulo.trim() !== '') {
+      musicaEl.style.opacity = '0';
+      setTimeout(() => {
+        musicaEl.textContent = 'Tocando Agora: ' + titulo;
+        musicaEl.style.opacity = '0.9';
+      }, 400);
+    }
+  }
 
   async function buscarMusica() {
+    // Tenta 1: acesso direto ao servidor Shoutcast
     try {
       const resp = await fetch(STATUS_URL, { cache: 'no-store' });
       const data = await resp.json();
-      // O Shoutcast 2.x retorna os dados dentro de "icestats" > "source"
       const fonte = data?.icestats?.source;
-      const titulo = Array.isArray(fonte)
-        ? fonte[0]?.title
-        : fonte?.title;
-
+      const titulo = Array.isArray(fonte) ? fonte[0]?.title : fonte?.title;
       if (titulo && titulo.trim() !== '') {
-        musicaEl.style.opacity = '0';
-        setTimeout(() => {
-          musicaEl.textContent = '🎵 ' + titulo;
-          musicaEl.style.opacity = '0.9';
-        }, 400);
+        atualizarMusica(titulo);
+        return; // Sucesso — não precisa do proxy
       }
     } catch (err) {
-      // Se falhar, mantém o texto padrão silenciosamente
-      console.warn('Não foi possível buscar a música:', err);
+      console.warn('Acesso direto bloqueado, tentando proxy CORS...', err);
+    }
+
+    // Tenta 2: via proxy CORS público (corsproxy.io)
+    try {
+      const resp = await fetch(PROXY_URL, { cache: 'no-store' });
+      const data = await resp.json();
+      const fonte = data?.icestats?.source;
+      const titulo = Array.isArray(fonte) ? fonte[0]?.title : fonte?.title;
+      atualizarMusica(titulo);
+    } catch (err) {
+      console.warn('Proxy também falhou:', err);
+      // Mantém o texto padrão silenciosamente
     }
   }
 
