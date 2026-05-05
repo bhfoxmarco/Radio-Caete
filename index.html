@@ -392,22 +392,20 @@
   });
 
   // ===== NOME DA MÚSICA TOCANDO =====
-  // Usa proxy jsonp.afeld.me que é compatível com Chrome e Safari
-  const musicaEl  = document.getElementById('musicaTocando');
+  // Busca direto no servidor com correção de encoding (codificação de caracteres)
+  const musicaEl   = document.getElementById('musicaTocando');
   const MUSICA_URL = 'https://stm11.voxhd.com.br:11404/currentsong?sid=1';
-  const PROXY_URL  = 'https://corsproxy.io/?' + encodeURIComponent(MUSICA_URL);
 
   async function buscarMusica() {
     try {
-      const resp  = await fetch(PROXY_URL, {
-        cache: 'no-store',
-        headers: { 'x-requested-with': 'XMLHttpRequest' }
-      });
-      const texto = await resp.text();
-      if (texto && texto.trim().length > 2 && !texto.includes('{')) {
+      const resp   = await fetch(MUSICA_URL, { cache: 'no-store' });
+      // Lê o buffer — bloco de dados brutos — e decodifica como UTF-8
+      const buffer = await resp.arrayBuffer();
+      const texto  = new TextDecoder('utf-8').decode(buffer).trim();
+      if (texto && texto.length > 2) {
         musicaEl.style.opacity = '0';
         setTimeout(() => {
-          musicaEl.textContent = 'Tocando Agora: ' + texto.trim();
+          musicaEl.textContent = 'Tocando Agora: ' + texto;
           musicaEl.style.opacity = '0.9';
         }, 400);
       }
