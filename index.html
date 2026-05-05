@@ -392,18 +392,17 @@
   });
 
   // ===== NOME DA MÚSICA TOCANDO =====
-  // Servidor VoxHD envia o texto em Latin-1 (ISO-8859-1)
-  // formato antigo muito usado em sistemas de rádio e streaming
+  // Usa proxy thingproxy que é estável e compatível com GitHub Pages
   const musicaEl   = document.getElementById('musicaTocando');
   const MUSICA_URL = 'https://stm11.voxhd.com.br:11404/currentsong?sid=1';
+  const PROXY_URL  = 'https://thingproxy.freeboard.io/fetch/' + MUSICA_URL;
 
   async function buscarMusica() {
     try {
-      const resp   = await fetch(MUSICA_URL, { cache: 'no-store' });
+      const resp   = await fetch(PROXY_URL, { cache: 'no-store' });
       const buffer = await resp.arrayBuffer();
-      // Decodifica como Latin-1 que é o formato correto do Shoutcast
       const texto  = new TextDecoder('iso-8859-1').decode(buffer).trim();
-      if (texto && texto.length > 2) {
+      if (texto && texto.length > 2 && !texto.startsWith('<') && !texto.startsWith('{')) {
         musicaEl.style.opacity = '0';
         setTimeout(() => {
           musicaEl.textContent = 'Tocando Agora: ' + texto;
