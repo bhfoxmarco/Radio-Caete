@@ -392,19 +392,19 @@
   });
 
   // ===== NOME DA MÚSICA TOCANDO =====
-  // Busca o nome da música via arquivo PHP hospedado no HostGator
-  // que resolve o problema de CORS buscando no servidor diretamente
+  // URL indicada pelo suporte do VoxHD — currentsongs com "s" no final
   const musicaEl   = document.getElementById('musicaTocando');
-  const MUSICA_URL = 'https://bhfox.com.br/radio/show_name_music.php';
+  const MUSICA_URL = 'https://stm11.voxhd.com.br:11404/currentsongs?sid=1';
 
   async function buscarMusica() {
     try {
-      const resp  = await fetch(MUSICA_URL, { cache: 'no-store' });
-      const texto = await resp.text();
-      if (texto && texto.trim().length > 2) {
+      const resp   = await fetch(MUSICA_URL, { cache: 'no-store' });
+      const buffer = await resp.arrayBuffer();
+      const texto  = new TextDecoder('iso-8859-1').decode(buffer).trim();
+      if (texto && texto.length > 2) {
         musicaEl.style.opacity = '0';
         setTimeout(() => {
-          musicaEl.textContent = 'Tocando Agora: ' + texto.trim();
+          musicaEl.textContent = 'Tocando Agora: ' + texto;
           musicaEl.style.opacity = '0.9';
         }, 400);
       }
