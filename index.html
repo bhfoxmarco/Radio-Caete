@@ -203,7 +203,7 @@
     position: relative;
     z-index: 1;
     width: 100%;
-    padding: 0 24px;
+    text-align: center;
     animation: entrar2 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both;
   }
 
@@ -214,37 +214,18 @@
     color: var(--verde-vivo);
     text-transform: uppercase;
     opacity: 0.7;
-    text-align: center;
-    margin-bottom: 12px;
+    margin-bottom: 6px;
   }
 
-  /* Grade de patrocinadores — 3 por linha */
-  .patrocinadores-grade {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
-
-  .patrocinador-item {
-    background: rgba(255,255,255,0.07);
-    border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 10px;
-    padding: 10px 14px;
-    font-size: 10px;
+  .patrocinador-nome {
+    font-size: 13px;
     font-weight: 700;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.1em;
     color: var(--branco);
     text-transform: uppercase;
-    opacity: 0.85;
-    text-align: center;
-    min-width: 90px;
-    transition: opacity 0.2s, border-color 0.2s;
-  }
-
-  .patrocinador-item:hover {
-    opacity: 1;
-    border-color: var(--verde-vivo);
+    opacity: 0.9;
+    transition: opacity 0.5s ease;
+    min-height: 20px;
   }
 
   /* ===== RODAPÉ ===== */
@@ -355,11 +336,7 @@
 <!-- PATROCINADORES -->
 <div class="patrocinadores-section">
   <div class="patrocinadores-titulo">Apoio</div>
-  <div class="patrocinadores-grade">
-    <div class="patrocinador-item">Supermercado BH</div>
-    <div class="patrocinador-item">Jornal Opinião</div>
-    <div class="patrocinador-item">Clínica Vet. Clinvet</div>
-  </div>
+  <div class="patrocinador-nome" id="patrocinadorNome">SUPERMERCADO BH</div>
 </div>
 
 <!-- RODAPÉ -->
@@ -476,6 +453,25 @@
       dica.style.display = 'block';
     }
   }
+
+  // ===== SLIDE DE PATROCINADORES =====
+  const patrocinadores = [
+    'SUPERMERCADO BH',
+    'JORNAL OPINIÃO',
+    'CLÍNICA VET. CLINVET',
+  ];
+
+  const patrocinadorEl = document.getElementById('patrocinadorNome');
+  let idxP = 0;
+
+  setInterval(() => {
+    patrocinadorEl.style.opacity = '0';
+    setTimeout(() => {
+      idxP = (idxP + 1) % patrocinadores.length;
+      patrocinadorEl.textContent = patrocinadores[idxP];
+      patrocinadorEl.style.opacity = '0.9';
+    }, 500);
+  }, 4000);
 
   // ===== SERVICE WORKER =====
   if ('serviceWorker' in navigator) {
