@@ -48,7 +48,6 @@
     position: relative;
   }
 
-  /* Ondas decorativas no fundo */
   body::before {
     content: '';
     position: fixed;
@@ -59,7 +58,6 @@
     z-index: 0;
   }
 
-  /* ===== SEÇÃO TOPO — LOGO ===== */
   .topo {
     position: relative;
     z-index: 1;
@@ -99,7 +97,6 @@
     object-fit: cover;
   }
 
-  /* ===== SEÇÃO MEIO — PLAYER ===== */
   .meio {
     position: relative;
     z-index: 1;
@@ -117,7 +114,6 @@
     to   { opacity: 1; transform: translateY(0); }
   }
 
-  /* ===== BOTÃO PLAY ===== */
   .btn-play {
     width: 88px;
     height: 88px;
@@ -151,7 +147,6 @@
     100% { box-shadow: 0 8px 32px rgba(126,211,33,0.5), 0 0 0 0   rgba(126,211,33,0); }
   }
 
-  /* ===== VOLUME ===== */
   .volume-wrap {
     width: 100%;
     display: flex;
@@ -185,7 +180,6 @@
 
   input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.2); }
 
-  /* ===== NOME DA MÚSICA ===== */
   .musica-tocando {
     font-size: 13px;
     font-weight: 500;
@@ -198,7 +192,6 @@
     max-width: 100%;
   }
 
-  /* ===== SEÇÃO PATROCINADORES ===== */
   .patrocinadores-section {
     position: relative;
     z-index: 1;
@@ -228,7 +221,6 @@
     min-height: 20px;
   }
 
-  /* ===== RODAPÉ ===== */
   .rodape {
     position: relative;
     z-index: 1;
@@ -281,7 +273,6 @@
     transition: opacity 0.3s ease;
   }
 
-  /* ===== DICA DE INSTALAÇÃO ===== */
   .instalar-dica {
     font-size: 11px;
     color: var(--verde-vivo);
@@ -311,35 +302,29 @@
   <source src="https://stm11.voxhd.com.br:11404/stream/" type="audio/mpeg">
 </audio>
 
-<!-- TOPO: LOGO -->
 <div class="topo">
   <div class="logo-circulo">
     <img class="logo" src="logo.png" alt="Rádio Caeté - Logo">
   </div>
 </div>
 
-<!-- MEIO: PLAYER -->
 <div class="meio">
   <button class="btn-play" id="btnPlay" aria-label="Tocar / Pausar">
     <i class="fas fa-play" id="iconePlay"></i>
   </button>
-
   <div class="volume-wrap">
     <i class="fas fa-volume-down"></i>
     <input type="range" id="volume" min="0" max="100" value="70" aria-label="Volume">
     <i class="fas fa-volume-up"></i>
   </div>
-
   <p class="musica-tocando" id="musicaTocando">Tocando Agora: Rádio Caeté</p>
 </div>
 
-<!-- PATROCINADORES -->
 <div class="patrocinadores-section">
   <div class="patrocinadores-titulo">Apoio</div>
   <div class="patrocinador-nome" id="patrocinadorNome">NOME DO PATROCINADOR 01</div>
 </div>
 
-<!-- RODAPÉ -->
 <div class="rodape">
   <div class="divisor"></div>
   <div class="social">
@@ -365,7 +350,6 @@
   const volume  = document.getElementById('volume');
   let tocando   = false;
 
-  // ===== PLAY / PAUSE =====
   btnPlay.addEventListener('click', () => {
     if (tocando) {
       audio.pause();
@@ -379,7 +363,6 @@
     tocando = !tocando;
   });
 
-  // ===== VOLUME =====
   audio.volume = volume.value / 100;
   volume.addEventListener('input', () => {
     audio.volume = volume.value / 100;
@@ -388,18 +371,18 @@
   });
 
   // ===== NOME DA MÚSICA =====
+  // Busca via PHP no HostGator que acessa o VoxHD sem restrições de CORS
   const musicaEl   = document.getElementById('musicaTocando');
-  const MUSICA_URL = 'https://stm11.voxhd.com.br:11404/currentsongs?sid=1';
+  const MUSICA_URL = 'https://bhfox.com.br/musica.php';
 
   async function buscarMusica() {
     try {
-      const resp   = await fetch(MUSICA_URL, { cache: 'no-store' });
-      const buffer = await resp.arrayBuffer();
-      const texto  = new TextDecoder('iso-8859-1').decode(buffer).trim();
-      if (texto && texto.length > 2) {
+      const resp  = await fetch(MUSICA_URL, { cache: 'no-store' });
+      const texto = await resp.text();
+      if (texto && texto.trim().length > 2) {
         musicaEl.style.opacity = '0';
         setTimeout(() => {
-          musicaEl.textContent = 'Tocando Agora: ' + texto;
+          musicaEl.textContent = 'Tocando Agora: ' + texto.trim();
           musicaEl.style.opacity = '0.9';
         }, 400);
       }
@@ -411,7 +394,6 @@
   buscarMusica();
   setInterval(buscarMusica, 15000);
 
-  // ===== COMPARTILHAR =====
   const btnCompartilhar = document.getElementById('btnCompartilhar');
   const msgCopiado      = document.getElementById('msgCopiado');
 
@@ -437,7 +419,6 @@
     }
   });
 
-  // ===== DICA DE INSTALAÇÃO =====
   const dica      = document.getElementById('dicaInstalar');
   const ua        = navigator.userAgent;
   const isIOS     = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
@@ -473,7 +454,6 @@
     }, 500);
   }, 4000);
 
-  // ===== SERVICE WORKER =====
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('service-worker.js')
       .then(() => console.log('✅ SW registrado'))
