@@ -377,8 +377,9 @@
 
   async function buscarMusica() {
     try {
-      const resp  = await fetch(MUSICA_URL, { cache: 'no-store' });
-      const texto = await resp.text();
+      const resp   = await fetch(MUSICA_URL, { cache: 'no-store' });
+      const buffer = await resp.arrayBuffer();
+      const texto  = new TextDecoder('iso-8859-1').decode(buffer).trim();
       if (texto && texto.trim().length > 2) {
         musicaEl.style.opacity = '0';
         setTimeout(() => {
