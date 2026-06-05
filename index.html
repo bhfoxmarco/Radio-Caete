@@ -137,9 +137,7 @@
 
   .btn-play:active { transform: scale(0.95); }
 
-  .btn-play.tocando {
-    animation: pulso 2s ease-in-out infinite;
-  }
+  .btn-play.tocando { animation: pulso 2s ease-in-out infinite; }
 
   @keyframes pulso {
     0%   { box-shadow: 0 8px 32px rgba(126,211,33,0.5), 0 0 0 0   rgba(126,211,33,0.3); }
@@ -147,13 +145,7 @@
     100% { box-shadow: 0 8px 32px rgba(126,211,33,0.5), 0 0 0 0   rgba(126,211,33,0); }
   }
 
-  .volume-wrap {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
+  .volume-wrap { width: 100%; display: flex; align-items: center; gap: 12px; }
   .volume-wrap i { font-size: 16px; opacity: 0.6; color: var(--verde-vivo); flex-shrink: 0; }
 
   input[type=range] {
@@ -233,17 +225,9 @@
     animation: entrar2 1s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s both;
   }
 
-  .divisor {
-    width: 60%;
-    height: 1px;
-    background: var(--branco-borda);
-  }
+  .divisor { width: 60%; height: 1px; background: var(--branco-borda); }
 
-  .social {
-    display: flex;
-    justify-content: center;
-    gap: 32px;
-  }
+  .social { display: flex; justify-content: center; gap: 32px; }
 
   .social a {
     color: var(--branco);
@@ -253,17 +237,9 @@
     text-decoration: none;
   }
 
-  .social a:hover {
-    opacity: 1;
-    color: var(--verde-vivo);
-    transform: translateY(-3px);
-  }
+  .social a:hover { opacity: 1; color: var(--verde-vivo); transform: translateY(-3px); }
 
-  .footer-text {
-    font-size: 10px;
-    opacity: 0.25;
-    letter-spacing: 0.08em;
-  }
+  .footer-text { font-size: 10px; opacity: 0.25; letter-spacing: 0.08em; }
 
   #msgCopiado {
     display: none;
@@ -371,15 +347,14 @@
   });
 
   // ===== NOME DA MÚSICA =====
-  // Busca via PHP no HostGator que acessa o VoxHD sem restrições de CORS
+  // Busca via Cloudflare Worker — gratuito e sem problemas de CORS
   const musicaEl   = document.getElementById('musicaTocando');
-  const MUSICA_URL = 'https://bhfox.com.br/musica.php';
+  const MUSICA_URL = 'https://royal-feather-cd3c.bhfoxmarco.workers.dev/';
 
   async function buscarMusica() {
     try {
-      const resp   = await fetch(MUSICA_URL, { cache: 'no-store' });
-      const buffer = await resp.arrayBuffer();
-      const texto  = new TextDecoder('iso-8859-1').decode(buffer).trim();
+      const resp  = await fetch(MUSICA_URL, { cache: 'no-store' });
+      const texto = await resp.text();
       if (texto && texto.trim().length > 2) {
         musicaEl.style.opacity = '0';
         setTimeout(() => {
@@ -436,7 +411,6 @@
     }
   }
 
-  // ===== SLIDE DE PATROCINADORES =====
   const patrocinadores = [
     'NOME DO PATROCINADOR 01',
     'NOME DO PATROCINADOR 02',
