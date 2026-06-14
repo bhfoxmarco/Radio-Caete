@@ -2,397 +2,204 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Modelos de Fundo – Web Rádio</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Modelos Web Rádio</title>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: 'Segoe UI', sans-serif; background: #111; color: #fff; }
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html, body { width:100%; height:100%; overflow:hidden; font-family:'Segoe UI', system-ui, sans-serif; background:#000; }
 
-  h1 {
-    text-align: center;
-    padding: 32px 16px 8px;
-    font-size: 1.4rem;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: #ccc;
-  }
-  p.sub {
-    text-align: center;
-    color: #666;
-    font-size: 0.85rem;
-    margin-bottom: 40px;
-  }
+  #slider { display:flex; width:1000%; height:100dvh; transition:transform 0.45s cubic-bezier(.4,0,.2,1); }
 
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 24px;
-    padding: 0 24px 60px;
-    max-width: 1300px;
-    margin: 0 auto;
-  }
+  .slide { width:10%; height:100dvh; display:flex; flex-direction:column; align-items:center; justify-content:space-between; position:relative; overflow:hidden; }
 
-  .card {
-    border-radius: 16px;
-    overflow: hidden;
-    border: 1px solid #2a2a2a;
-    transition: transform 0.2s, box-shadow 0.2s;
-  }
-  .card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 40px rgba(0,0,0,0.6);
-  }
+  .slide-header { width:100%; display:flex; align-items:center; justify-content:space-between; padding:48px 20px 12px; position:relative; z-index:10; }
+  .modelo-nome { font-size:0.7rem; font-weight:700; letter-spacing:2px; text-transform:uppercase; opacity:0.7; color:#fff; }
+  .contador { font-size:0.75rem; font-weight:700; color:#fff; background:rgba(0,0,0,0.35); padding:4px 12px; border-radius:20px; backdrop-filter:blur(8px); }
 
-  .preview {
-    width: 100%;
-    height: 270px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    overflow: hidden;
-  }
+  .player-center { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; position:relative; z-index:5; padding:0 28px; }
 
-  .label-tag {
-    position: absolute;
-    top: 12px;
-    left: 12px;
-    background: rgba(0,0,0,0.55);
-    color: #fff;
-    font-size: 0.68rem;
-    font-weight: 700;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    padding: 4px 10px;
-    border-radius: 20px;
-    backdrop-filter: blur(6px);
-  }
+  .logo-wrap { display:flex; flex-direction:column; align-items:center; gap:6px; margin-bottom:4px; }
+  .logo-circle { width:110px; height:110px; border-radius:50%; border:2.5px solid rgba(255,255,255,.22); display:flex; align-items:center; justify-content:center; }
+  .sua-logo { font-size:0.58rem; font-weight:700; letter-spacing:3px; text-transform:uppercase; color:#fff; opacity:0.45; }
 
-  /* Bloco da logo mockup */
-  .mock-logo-wrap {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 14px;
-  }
-  .mock-logo-circle {
-    width: 76px;
-    height: 76px;
-    border-radius: 50%;
-    border: 2.5px solid rgba(255,255,255,0.25);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 6px;
-  }
-  .sua-logo-label {
-    font-size: 0.58rem;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    opacity: 0.55;
-  }
+  .radio-nome { font-size:1.05rem; font-weight:800; letter-spacing:2px; text-transform:uppercase; color:#fff; text-align:center; }
+  .radio-sub { font-size:0.7rem; color:rgba(255,255,255,.5); letter-spacing:1px; }
+  .tocando { font-size:0.67rem; color:rgba(255,255,255,.55); background:rgba(0,0,0,.28); padding:6px 16px; border-radius:20px; letter-spacing:.3px; backdrop-filter:blur(6px); margin-top:2px; text-align:center; }
+  .tocando span { color:#fff; opacity:.85; }
 
-  .mock-title {
-    font-size: 0.88rem;
-    font-weight: 700;
-    letter-spacing: 1px;
-    text-align: center;
-    text-transform: uppercase;
-  }
-  .mock-sub {
-    font-size: 0.7rem;
-    opacity: 0.55;
-    margin-top: 4px;
-    text-align: center;
-  }
-  .mock-bar {
-    margin-top: 16px;
-  }
-  .mock-btn {
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1rem;
-    cursor: pointer;
-  }
+  .play-btn { width:68px; height:68px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.4rem; margin-top:6px; cursor:pointer; box-shadow:0 4px 24px rgba(0,0,0,.35); }
 
-  /* ══════════════════════════════════════════
-     FUNDOS — cada .bgN define cor do tema
-  ══════════════════════════════════════════ */
+  .volume-row { display:flex; align-items:center; gap:10px; margin-top:4px; opacity:.55; }
+  .volume-bar { width:110px; height:3px; background:rgba(255,255,255,.2); border-radius:4px; position:relative; }
+  .volume-fill { position:absolute; left:0; top:0; width:65%; height:100%; border-radius:4px; }
 
-  /* 1 — Verde Floresta */
-  .bg1 { background: radial-gradient(ellipse at 20% 80%, #0d3b1e, transparent 60%), radial-gradient(ellipse at 80% 20%, #1a5c2a, transparent 55%), linear-gradient(160deg,#081c0e,#0f2e18 50%,#0a1f10); }
-  .bg1 .mock-logo-circle { border-color:#22c55e; background:rgba(34,197,94,.12); }
-  .bg1 .mock-btn { background:#22c55e; color:#000; }
-  .bg1 .mic-color { stroke:#22c55e; }
+  /* Setas */
+  .nav-btn { position:fixed; top:50%; transform:translateY(-50%); z-index:200; background:rgba(0,0,0,.35); backdrop-filter:blur(10px); border:1px solid rgba(255,255,255,.15); color:#fff; width:38px; height:62px; border-radius:8px; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:1.2rem; transition:opacity .2s, background .2s; user-select:none; }
+  .nav-btn:hover { background:rgba(0,0,0,.6); }
+  .nav-btn.hidden { opacity:0; pointer-events:none; }
+  #btnPrev { left:5px; } #btnNext { right:5px; }
 
-  /* 2 — Pôr do Sol */
-  .bg2 { background: radial-gradient(ellipse at 50% 0%,#ff6b1a,transparent 55%), radial-gradient(ellipse at 80% 100%,#b91c1c,transparent 50%), linear-gradient(180deg,#1a0a00,#2d1200 60%,#1a0800); }
-  .bg2 .mock-logo-circle { border-color:#fb923c; background:rgba(251,146,60,.12); }
-  .bg2 .mock-btn { background:#fb923c; color:#000; }
-  .bg2 .mic-color { stroke:#fb923c; }
+  /* Rodapé */
+  .slide-footer { width:100%; padding:12px 24px 30px; display:flex; flex-direction:column; align-items:center; gap:14px; position:relative; z-index:10; }
+  .social-row { display:flex; gap:22px; align-items:center; }
+  .social-btn { display:flex; flex-direction:column; align-items:center; gap:4px; cursor:pointer; opacity:.75; transition:opacity .2s; }
+  .social-btn:hover { opacity:1; }
+  .social-icon { width:46px; height:46px; border-radius:14px; display:flex; align-items:center; justify-content:center; }
+  .social-label { font-size:0.54rem; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:rgba(255,255,255,.55); }
+  .dots { display:flex; gap:5px; align-items:center; }
+  .dot { width:5px; height:5px; border-radius:50%; background:rgba(255,255,255,.28); transition:all .3s; }
+  .dot.active { width:20px; border-radius:4px; background:#fff; }
 
-  /* 3 — Noite Índigo */
-  .bg3 { background: radial-gradient(ellipse at 30% 40%,#312e81,transparent 55%), radial-gradient(ellipse at 70% 60%,#1e1b4b,transparent 50%), linear-gradient(135deg,#06050f,#0f0e27); }
-  .bg3 .mock-logo-circle { border-color:#818cf8; background:rgba(129,140,248,.12); }
-  .bg3 .mock-btn { background:#818cf8; color:#000; }
-  .bg3 .mic-color { stroke:#818cf8; }
+  /* FUNDOS */
+  .bg1{background:radial-gradient(ellipse at 20% 80%,#0d3b1e,transparent 60%),radial-gradient(ellipse at 80% 20%,#1a5c2a,transparent 55%),linear-gradient(160deg,#081c0e,#0f2e18 50%,#0a1f10)}
+  .bg1 .logo-circle{border-color:#22c55e;background:rgba(34,197,94,.12)}.bg1 .play-btn{background:#22c55e;color:#000}.bg1 .volume-fill{background:#22c55e}.bg1 .s-ig,.bg1 .s-wpp,.bg1 .s-sh{background:rgba(34,197,94,.2)}
 
-  /* 4 — Terra / Barro */
-  .bg4 { background: radial-gradient(ellipse at 25% 75%,#78350f,transparent 55%), radial-gradient(ellipse at 75% 25%,#92400e,transparent 50%), linear-gradient(145deg,#1c0f05,#2d1a07 50%,#1a0e04); }
-  .bg4 .mock-logo-circle { border-color:#fbbf24; background:rgba(251,191,36,.10); }
-  .bg4 .mock-btn { background:#fbbf24; color:#000; }
-  .bg4 .mic-color { stroke:#fbbf24; }
+  .bg2{background:radial-gradient(ellipse at 50% 0%,#ff6b1a,transparent 55%),radial-gradient(ellipse at 80% 100%,#b91c1c,transparent 50%),linear-gradient(180deg,#1a0a00,#2d1200 60%,#1a0800)}
+  .bg2 .logo-circle{border-color:#fb923c;background:rgba(251,146,60,.12)}.bg2 .play-btn{background:#fb923c;color:#000}.bg2 .volume-fill{background:#fb923c}.bg2 .s-ig,.bg2 .s-wpp,.bg2 .s-sh{background:rgba(251,146,60,.2)}
 
-  /* 5 — Água Turquesa */
-  .bg5 { background: radial-gradient(ellipse at 40% 60%,#0c4a6e,transparent 55%), radial-gradient(ellipse at 70% 30%,#075985,transparent 50%), linear-gradient(160deg,#020c12,#041e2e 60%,#020c12); }
-  .bg5 .mock-logo-circle { border-color:#22d3ee; background:rgba(34,211,238,.10); }
-  .bg5 .mock-btn { background:#22d3ee; color:#000; }
-  .bg5 .mic-color { stroke:#22d3ee; }
+  .bg3{background:radial-gradient(ellipse at 30% 40%,#312e81,transparent 55%),radial-gradient(ellipse at 70% 60%,#1e1b4b,transparent 50%),linear-gradient(135deg,#06050f,#0f0e27)}
+  .bg3 .logo-circle{border-color:#818cf8;background:rgba(129,140,248,.12)}.bg3 .play-btn{background:#818cf8;color:#000}.bg3 .volume-fill{background:#818cf8}.bg3 .s-ig,.bg3 .s-wpp,.bg3 .s-sh{background:rgba(129,140,248,.2)}
 
-  /* 6 — Neon Roxo Synthwave */
-  .bg6 { background: radial-gradient(ellipse at 50% 0%,#7c3aed55,transparent 60%), radial-gradient(ellipse at 0% 100%,#db277755,transparent 55%), radial-gradient(ellipse at 100% 100%,#4f46e555,transparent 55%), linear-gradient(160deg,#0a0010,#110020 60%,#0a0010); }
-  .bg6 .mock-logo-circle { border-color:#a78bfa; background:rgba(167,139,250,.10); box-shadow:0 0 18px rgba(167,139,250,.3); }
-  .bg6 .mock-btn { background:linear-gradient(135deg,#7c3aed,#db2777); color:#fff; box-shadow:0 0 14px rgba(167,139,250,.4); }
-  .bg6 .mic-color { stroke:#a78bfa; }
-  .bg6 .mock-title { text-shadow:0 0 12px rgba(167,139,250,.6); }
+  .bg4{background:radial-gradient(ellipse at 25% 75%,#78350f,transparent 55%),radial-gradient(ellipse at 75% 25%,#92400e,transparent 50%),linear-gradient(145deg,#1c0f05,#2d1a07 50%,#1a0e04)}
+  .bg4 .logo-circle{border-color:#fbbf24;background:rgba(251,191,36,.10)}.bg4 .play-btn{background:#fbbf24;color:#000}.bg4 .volume-fill{background:#fbbf24}.bg4 .s-ig,.bg4 .s-wpp,.bg4 .s-sh{background:rgba(251,191,36,.2)}
 
-  /* 7 — Vermelho Rock */
-  .bg7 { background: radial-gradient(ellipse at 50% 0%,#7f1d1d,transparent 60%), radial-gradient(ellipse at 20% 100%,#450a0a,transparent 55%), linear-gradient(160deg,#0d0000,#1a0000 60%,#0d0000); }
-  .bg7 .mock-logo-circle { border-color:#f87171; background:rgba(248,113,113,.10); }
-  .bg7 .mock-btn { background:#f87171; color:#000; }
-  .bg7 .mic-color { stroke:#f87171; }
+  .bg5{background:radial-gradient(ellipse at 40% 60%,#0c4a6e,transparent 55%),radial-gradient(ellipse at 70% 30%,#075985,transparent 50%),linear-gradient(160deg,#020c12,#041e2e 60%,#020c12)}
+  .bg5 .logo-circle{border-color:#22d3ee;background:rgba(34,211,238,.10)}.bg5 .play-btn{background:#22d3ee;color:#000}.bg5 .volume-fill{background:#22d3ee}.bg5 .s-ig,.bg5 .s-wpp,.bg5 .s-sh{background:rgba(34,211,238,.2)}
 
-  /* 8 — Galáxia Rosa */
-  .bg8 { background: radial-gradient(ellipse at 30% 30%,#831843,transparent 55%), radial-gradient(ellipse at 70% 70%,#500724,transparent 55%), radial-gradient(ellipse at 60% 10%,#4a044e,transparent 50%), linear-gradient(160deg,#0c0008,#1a000f 60%,#0c0008); }
-  .bg8 .mock-logo-circle { border-color:#f472b6; background:rgba(244,114,182,.10); }
-  .bg8 .mock-btn { background:#f472b6; color:#000; }
-  .bg8 .mic-color { stroke:#f472b6; }
+  .bg6{background:radial-gradient(ellipse at 50% 0%,#7c3aed55,transparent 60%),radial-gradient(ellipse at 0% 100%,#db277755,transparent 55%),radial-gradient(ellipse at 100% 100%,#4f46e555,transparent 55%),linear-gradient(160deg,#0a0010,#110020 60%,#0a0010)}
+  .bg6 .logo-circle{border-color:#a78bfa;background:rgba(167,139,250,.10);box-shadow:0 0 24px rgba(167,139,250,.3)}.bg6 .play-btn{background:linear-gradient(135deg,#7c3aed,#db2777);color:#fff}.bg6 .volume-fill{background:#a78bfa}.bg6 .s-ig,.bg6 .s-wpp,.bg6 .s-sh{background:rgba(167,139,250,.2)}.bg6 .radio-nome{text-shadow:0 0 14px rgba(167,139,250,.6)}
 
-  /* 9 — Grafite Urbano */
-  .bg9 { background: radial-gradient(ellipse at 20% 20%,#374151,transparent 60%), radial-gradient(ellipse at 80% 80%,#1f2937,transparent 55%), linear-gradient(145deg,#030405,#0d1117 60%,#030405); }
-  .bg9 .mock-logo-circle { border-color:#9ca3af; background:rgba(156,163,175,.10); }
-  .bg9 .mock-btn { background:#9ca3af; color:#000; }
-  .bg9 .mic-color { stroke:#9ca3af; }
+  .bg7{background:radial-gradient(ellipse at 50% 0%,#7f1d1d,transparent 60%),radial-gradient(ellipse at 20% 100%,#450a0a,transparent 55%),linear-gradient(160deg,#0d0000,#1a0000 60%,#0d0000)}
+  .bg7 .logo-circle{border-color:#f87171;background:rgba(248,113,113,.10)}.bg7 .play-btn{background:#f87171;color:#000}.bg7 .volume-fill{background:#f87171}.bg7 .s-ig,.bg7 .s-wpp,.bg7 .s-sh{background:rgba(248,113,113,.2)}
 
-  /* 10 — Dourado Luxo */
-  .bg10 { background: radial-gradient(ellipse at 40% 30%,#92400e,transparent 55%), radial-gradient(ellipse at 70% 80%,#78350f,transparent 55%), radial-gradient(ellipse at 20% 70%,#451a03,transparent 50%), linear-gradient(145deg,#0a0500,#1a0c00 60%,#0a0500); }
-  .bg10 .mock-logo-circle { border-color:#fcd34d; background:rgba(252,211,77,.08); box-shadow:0 0 20px rgba(252,211,77,.2); }
-  .bg10 .mock-btn { background:linear-gradient(135deg,#f59e0b,#fcd34d); color:#000; }
-  .bg10 .mic-color { stroke:#fcd34d; }
-  .bg10 .mock-title { text-shadow:0 0 10px rgba(252,211,77,.4); }
+  .bg8{background:radial-gradient(ellipse at 30% 30%,#831843,transparent 55%),radial-gradient(ellipse at 70% 70%,#500724,transparent 55%),radial-gradient(ellipse at 60% 10%,#4a044e,transparent 50%),linear-gradient(160deg,#0c0008,#1a000f 60%,#0c0008)}
+  .bg8 .logo-circle{border-color:#f472b6;background:rgba(244,114,182,.10)}.bg8 .play-btn{background:#f472b6;color:#000}.bg8 .volume-fill{background:#f472b6}.bg8 .s-ig,.bg8 .s-wpp,.bg8 .s-sh{background:rgba(244,114,182,.2)}
 
-  /* ══ Efeitos especiais ══ */
-  .stars { position:absolute; inset:0; overflow:hidden; pointer-events:none; }
-  .star { position:absolute; background:#fff; border-radius:50%; animation:twinkle 2s infinite alternate; }
-  @keyframes twinkle { from{opacity:.2} to{opacity:1} }
+  .bg9{background:radial-gradient(ellipse at 20% 20%,#374151,transparent 60%),radial-gradient(ellipse at 80% 80%,#1f2937,transparent 55%),linear-gradient(145deg,#030405,#0d1117 60%,#030405)}
+  .bg9 .logo-circle{border-color:#9ca3af;background:rgba(156,163,175,.10)}.bg9 .play-btn{background:#9ca3af;color:#000}.bg9 .volume-fill{background:#9ca3af}.bg9 .s-ig,.bg9 .s-wpp,.bg9 .s-sh{background:rgba(156,163,175,.2)}
 
-  .wave-wrap { position:absolute; bottom:0; width:100%; pointer-events:none; }
-  .wave { position:absolute; bottom:0; width:200%; height:60px; border-radius:50%; animation:wave-anim 6s linear infinite; }
-  .wave:nth-child(1){background:#22d3ee;opacity:.12;}
-  .wave:nth-child(2){background:#0ea5e9;animation-duration:9s;bottom:10px;opacity:.07;}
-  @keyframes wave-anim{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+  .bg10{background:radial-gradient(ellipse at 40% 30%,#92400e,transparent 55%),radial-gradient(ellipse at 70% 80%,#78350f,transparent 55%),linear-gradient(145deg,#0a0500,#1a0c00 60%,#0a0500)}
+  .bg10 .logo-circle{border-color:#fcd34d;background:rgba(252,211,77,.08);box-shadow:0 0 24px rgba(252,211,77,.2)}.bg10 .play-btn{background:linear-gradient(135deg,#f59e0b,#fcd34d);color:#000}.bg10 .volume-fill{background:#fcd34d}.bg10 .s-ig,.bg10 .s-wpp,.bg10 .s-sh{background:rgba(252,211,77,.2)}.bg10 .radio-nome{text-shadow:0 0 12px rgba(252,211,77,.4)}
 
-  .neon-line { position:absolute; left:0; right:0; height:1px; background:linear-gradient(90deg,transparent,#a78bfa,transparent); animation:neon-pulse 3s ease-in-out infinite; }
-  .neon-line:nth-child(2){top:30%;} .neon-line:nth-child(3){top:65%;animation-delay:1.5s;opacity:.5;}
-  @keyframes neon-pulse{0%,100%{opacity:.2}50%{opacity:.9}}
-
-  /* partículas flutuantes modelo 8 */
-  .particle { position:absolute; border-radius:50%; animation:float-up linear infinite; opacity:0; }
-  @keyframes float-up { 0%{transform:translateY(0);opacity:.6} 100%{transform:translateY(-260px);opacity:0} }
-
-  /* linhas diagonais grafite */
-  .diag-lines { position:absolute; inset:0; background:repeating-linear-gradient(45deg,transparent,transparent 18px,rgba(255,255,255,.025) 18px,rgba(255,255,255,.025) 19px); pointer-events:none; }
-
-  /* brilho dourado pulsante */
-  .gold-glow { position:absolute; inset:0; background:radial-gradient(ellipse at 50% 50%,rgba(252,211,77,.07),transparent 70%); animation:gold-pulse 4s ease-in-out infinite; pointer-events:none; }
-  @keyframes gold-pulse{0%,100%{opacity:.5}50%{opacity:1}}
-
-  /* ══ INFO CARD ══ */
-  .info { padding:16px 20px; background:#161616; border-top:1px solid #222; }
-  .info h3 { font-size:.9rem; font-weight:700; margin-bottom:4px; }
-  .info p { font-size:.75rem; color:#888; line-height:1.5; }
-  .tag { display:inline-block; font-size:.62rem; padding:2px 9px; border-radius:20px; margin-top:7px; font-weight:700; letter-spacing:1px; }
-
-  .t1{background:#14532d;color:#4ade80} .t2{background:#431407;color:#fb923c}
-  .t3{background:#1e1b4b;color:#a5b4fc} .t4{background:#422006;color:#fbbf24}
-  .t5{background:#0c2234;color:#22d3ee} .t6{background:#2d0047;color:#d8b4fe}
-  .t7{background:#3b0000;color:#fca5a5} .t8{background:#500724;color:#fbcfe8}
-  .t9{background:#111827;color:#d1d5db} .t10{background:#1c0f00;color:#fcd34d}
+  /* Efeitos */
+  .stars-l{position:absolute;inset:0;pointer-events:none}
+  .star{position:absolute;background:#fff;border-radius:50%;animation:twk 2s infinite alternate}
+  @keyframes twk{from{opacity:.15}to{opacity:.9}}
+  .wave-wrap{position:absolute;bottom:0;width:100%;pointer-events:none;overflow:hidden}
+  .wave{position:absolute;bottom:-10px;width:200%;height:70px;border-radius:50%;animation:wm 7s linear infinite}
+  .wave:nth-child(1){background:rgba(34,211,238,.12)}.wave:nth-child(2){background:rgba(14,165,233,.08);animation-duration:11s;bottom:10px}
+  @keyframes wm{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+  .nlines{position:absolute;inset:0;pointer-events:none}
+  .nline{position:absolute;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#a78bfa,transparent);animation:np 3s ease-in-out infinite}
+  .nline:nth-child(1){top:25%}.nline:nth-child(2){top:62%;animation-delay:1.5s;opacity:.4}
+  @keyframes np{0%,100%{opacity:.15}50%{opacity:.8}}
+  .diag{position:absolute;inset:0;background:repeating-linear-gradient(45deg,transparent,transparent 22px,rgba(255,255,255,.02) 22px,rgba(255,255,255,.02) 23px);pointer-events:none}
+  .gglow{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 40%,rgba(252,211,77,.08),transparent 65%);animation:gp 4s ease-in-out infinite;pointer-events:none}
+  @keyframes gp{0%,100%{opacity:.5}50%{opacity:1}}
+  .gfloor{position:absolute;bottom:90px;left:50%;transform:translateX(-50%);width:110%;opacity:.15;pointer-events:none}
 </style>
 </head>
 <body>
 
-<h1>🎙️ Modelos de Plano de Fundo — Web Rádio</h1>
-<p class="sub">10 estilos visuais exclusivos • Escolha o que combina com sua marca</p>
-
-<div class="grid" id="grid"></div>
+<button class="nav-btn hidden" id="btnPrev">&#8249;</button>
+<button class="nav-btn" id="btnNext">&#8250;</button>
+<div id="slider"></div>
 
 <script>
-/* ── Microfone SVG estilizado ── */
-function mic(color) {
-  return `<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <!-- corpo do microfone -->
-    <rect x="12" y="3" width="12" height="19" rx="6" class="mic-color" stroke="${color}" stroke-width="2" fill="none"/>
-    <!-- base do suporte -->
-    <path d="M8 18c0 5.523 4.477 10 10 10s10-4.477 10-10" class="mic-color" stroke="${color}" stroke-width="2" stroke-linecap="round" fill="none"/>
-    <!-- haste vertical -->
-    <line x1="18" y1="28" x2="18" y2="33" stroke="${color}" stroke-width="2" stroke-linecap="round"/>
-    <!-- base horizontal -->
-    <line x1="12" y1="33" x2="24" y2="33" stroke="${color}" stroke-width="2" stroke-linecap="round"/>
-    <!-- detalhe interno grade -->
-    <line x1="12" y1="11" x2="24" y2="11" stroke="${color}" stroke-width="1.2" stroke-linecap="round" opacity="0.5"/>
-    <line x1="12" y1="15" x2="24" y2="15" stroke="${color}" stroke-width="1.2" stroke-linecap="round" opacity="0.5"/>
-  </svg>`;
-}
+const TOTAL = 10;
 
-const modelos = [
-  {
-    bg: 'bg1', cor: '#22c55e', num: 1,
-    nome: 'Floresta Verde Escura',
-    desc: 'Gradiente profundo em tons de verde floresta. Transmite conexão com a natureza e identidade regional.',
-    tag: 't1', tagTxt: 'NATUREZA · REGIONAL',
-    extra: ''
-  },
-  {
-    bg: 'bg2', cor: '#fb923c', num: 2,
-    nome: 'Pôr do Sol Cerrado',
-    desc: 'Laranja e vermelho escuro evocando o entardecer no horizonte. Quente, envolvente e com forte personalidade.',
-    tag: 't2', tagTxt: 'CALOR · ENERGIA',
-    extra: ''
-  },
-  {
-    bg: 'bg3', cor: '#818cf8', num: 3,
-    nome: 'Noite Estrelada Índigo',
-    desc: 'Azul-índigo profundo com estrelas animadas. Sofisticado e moderno, ideal para programação noturna ou cultural.',
-    tag: 't3', tagTxt: 'SOFISTICADO · NOTURNO',
-    extra: `<div class="stars" id="stars"></div>`
-  },
-  {
-    bg: 'bg4', cor: '#fbbf24', num: 4,
-    nome: 'Terra / Barro',
-    desc: 'Marrom profundo com toque dourado. Raiz, identidade local e tradição — ideal para rádios do interior.',
-    tag: 't4', tagTxt: 'IDENTIDADE · TRADIÇÃO',
-    extra: ''
-  },
-  {
-    bg: 'bg5', cor: '#22d3ee', num: 5,
-    nome: 'Água Turquesa / Rio',
-    desc: 'Azul-petróleo escuro com ondas animadas. Fluidez e modernidade em constante movimento.',
-    tag: 't5', tagTxt: 'FLUIDEZ · MODERNO',
-    extra: `<div class="wave-wrap"><div class="wave"></div><div class="wave"></div></div>`
-  },
-  {
-    bg: 'bg6', cor: '#a78bfa', num: 6,
-    nome: 'Neon Roxo / Synthwave',
-    desc: 'Roxo profundo com grade neon em perspectiva, estilo retrô dos anos 80. Marca forte, jovem e impactante.',
-    tag: 't6', tagTxt: 'RETRÔ · FUTURISTA',
-    extra: `
-      <div class="neon-line"></div><div class="neon-line"></div>
-      <svg style="position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:500px;height:110px;opacity:.18" viewBox="0 0 500 120" xmlns="http://www.w3.org/2000/svg">
-        <line x1="0" y1="30" x2="500" y2="30" stroke="#a78bfa" stroke-width=".8"/>
-        <line x1="0" y1="55" x2="500" y2="55" stroke="#a78bfa" stroke-width=".6"/>
-        <line x1="0" y1="75" x2="500" y2="75" stroke="#a78bfa" stroke-width=".5"/>
-        <line x1="0" y1="92" x2="500" y2="92" stroke="#a78bfa" stroke-width=".4"/>
-        <line x1="0" y1="106" x2="500" y2="106" stroke="#a78bfa" stroke-width=".3"/>
-        <line x1="250" y1="0" x2="0" y2="120" stroke="#db2777" stroke-width=".6"/>
-        <line x1="250" y1="0" x2="500" y2="120" stroke="#db2777" stroke-width=".6"/>
-        <line x1="250" y1="0" x2="83" y2="120" stroke="#db2777" stroke-width=".4"/>
-        <line x1="250" y1="0" x2="167" y2="120" stroke="#db2777" stroke-width=".4"/>
-        <line x1="250" y1="0" x2="333" y2="120" stroke="#db2777" stroke-width=".4"/>
-        <line x1="250" y1="0" x2="417" y2="120" stroke="#db2777" stroke-width=".4"/>
-      </svg>`
-  },
-  {
-    bg: 'bg7', cor: '#f87171', num: 7,
-    nome: 'Vermelho Rock',
-    desc: 'Preto intenso com vermelho vibrante. Energia crua, força e atitude — perfeito para rádios de rock ou esportes.',
-    tag: 't7', tagTxt: 'ENERGIA · ATITUDE',
-    extra: ''
-  },
-  {
-    bg: 'bg8', cor: '#f472b6', num: 8,
-    nome: 'Galáxia Rosa',
-    desc: 'Rosa e roxo escuros em camadas de nebulosa. Vibrante, pop e feminino — ideal para rádios de música pop ou femininas.',
-    tag: 't8', tagTxt: 'POP · VIBRANTE',
-    extra: `<div class="stars" id="stars2"></div>`
-  },
-  {
-    bg: 'bg9', cor: '#9ca3af', num: 9,
-    nome: 'Grafite Urbano',
-    desc: 'Cinza carvão com linhas diagonais sutis. Visual minimalista e urbano — neutro o suficiente para qualquer tipo de rádio.',
-    tag: 't9', tagTxt: 'NEUTRO · URBANO',
-    extra: `<div class="diag-lines"></div>`
-  },
-  {
-    bg: 'bg10', cor: '#fcd34d', num: 10,
-    nome: 'Dourado Luxo',
-    desc: 'Preto profundo com reflexos dourados pulsantes. Sofisticação, prestígio e elegância — para rádios premium.',
-    tag: 't10', tagTxt: 'PREMIUM · ELEGANTE',
-    extra: `<div class="gold-glow"></div>`
-  }
+function mic(c){return`<svg width="52" height="52" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="12" y="3" width="12" height="19" rx="6" stroke="${c}" stroke-width="2" fill="none"/><path d="M8 18c0 5.523 4.477 10 10 10s10-4.477 10-10" stroke="${c}" stroke-width="2" stroke-linecap="round" fill="none"/><line x1="18" y1="28" x2="18" y2="33" stroke="${c}" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="33" x2="24" y2="33" stroke="${c}" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="11" x2="24" y2="11" stroke="${c}" stroke-width="1.2" stroke-linecap="round" opacity=".5"/><line x1="12" y1="15" x2="24" y2="15" stroke="${c}" stroke-width="1.2" stroke-linecap="round" opacity=".5"/></svg>`}
+
+const svgIG=`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.8" fill="#fff" stroke="none"/></svg>`;
+const svgWPP=`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>`;
+const svgSH=`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>`;
+
+const modelos=[
+  {bg:'bg1',cor:'#22c55e',nome:'Verde Floresta',   musica:'Evidências – Chitãozinho & Xororó'},
+  {bg:'bg2',cor:'#fb923c',nome:'Pôr do Sol',        musica:'Aquarela do Brasil – Gal Costa'},
+  {bg:'bg3',cor:'#818cf8',nome:'Noite Estrelada',   musica:'La Vie en Rose – Louis Armstrong'},
+  {bg:'bg4',cor:'#fbbf24',nome:'Terra / Barro',     musica:'Tocando em Frente – Almir Sater'},
+  {bg:'bg5',cor:'#22d3ee',nome:'Água Turquesa',     musica:'Garota de Ipanema – Tom Jobim'},
+  {bg:'bg6',cor:'#a78bfa',nome:'Neon Roxo',         musica:'Blinding Lights – The Weeknd'},
+  {bg:'bg7',cor:'#f87171',nome:'Vermelho Rock',     musica:'Bohemian Rhapsody – Queen'},
+  {bg:'bg8',cor:'#f472b6',nome:'Galáxia Rosa',      musica:'As It Was – Harry Styles'},
+  {bg:'bg9',cor:'#9ca3af',nome:'Grafite Urbano',    musica:'Notícias – Milton Nascimento'},
+  {bg:'bg10',cor:'#fcd34d',nome:'Dourado Luxo',     musica:'My Way – Frank Sinatra'},
 ];
 
-const grid = document.getElementById('grid');
+function extras(i){
+  if(i===2)return`<div class="stars-l" id="sl2"></div>`;
+  if(i===4)return`<div class="wave-wrap"><div class="wave"></div><div class="wave"></div></div>`;
+  if(i===5)return`<div class="nlines"><div class="nline"></div><div class="nline"></div></div><svg class="gfloor" viewBox="0 0 500 120" xmlns="http://www.w3.org/2000/svg"><line x1="0" y1="30" x2="500" y2="30" stroke="#a78bfa" stroke-width=".8"/><line x1="0" y1="55" x2="500" y2="55" stroke="#a78bfa" stroke-width=".6"/><line x1="0" y1="75" x2="500" y2="75" stroke="#a78bfa" stroke-width=".5"/><line x1="0" y1="92" x2="500" y2="92" stroke="#a78bfa" stroke-width=".35"/><line x1="250" y1="0" x2="0" y2="120" stroke="#db2777" stroke-width=".6"/><line x1="250" y1="0" x2="500" y2="120" stroke="#db2777" stroke-width=".6"/><line x1="250" y1="0" x2="100" y2="120" stroke="#db2777" stroke-width=".4"/><line x1="250" y1="0" x2="175" y2="120" stroke="#db2777" stroke-width=".4"/><line x1="250" y1="0" x2="325" y2="120" stroke="#db2777" stroke-width=".4"/><line x1="250" y1="0" x2="400" y2="120" stroke="#db2777" stroke-width=".4"/></svg>`;
+  if(i===7)return`<div class="stars-l" id="sl7"></div>`;
+  if(i===8)return`<div class="diag"></div>`;
+  if(i===9)return`<div class="gglow"></div>`;
+  return'';
+}
 
-modelos.forEach(m => {
-  const card = document.createElement('div');
-  card.className = 'card';
-  card.innerHTML = `
-    <div class="preview ${m.bg}">
-      ${m.extra}
-      <span class="label-tag">Modelo ${m.num}</span>
-      <div class="mock-logo-wrap">
-        <div class="mock-logo-circle">
-          ${mic(m.cor)}
-        </div>
-        <span class="sua-logo-label">SUA LOGO</span>
-      </div>
-      <div class="mock-title">Nome Sua Web Rádio</div>
-      <div class="mock-sub">Ao vivo • 24 horas</div>
-      <div class="mock-bar"><div class="mock-btn">▶</div></div>
+function dots(ativo){return modelos.map((_,i)=>`<div class="dot${i===ativo?' active':''}"></div>`).join('')}
+
+const slider=document.getElementById('slider');
+modelos.forEach((m,i)=>{
+  const s=document.createElement('div');
+  s.className=`slide ${m.bg}`;
+  s.innerHTML=`
+    ${extras(i)}
+    <div class="slide-header">
+      <span class="modelo-nome">${m.nome}</span>
+      <span class="contador">${i+1}/${TOTAL}</span>
     </div>
-    <div class="info">
-      <h3>${m.nome}</h3>
-      <p>${m.desc}</p>
-      <span class="tag ${m.tag}">${m.tagTxt}</span>
+    <div class="player-center">
+      <div class="logo-wrap">
+        <div class="logo-circle">${mic(m.cor)}</div>
+        <span class="sua-logo">SUA LOGO</span>
+      </div>
+      <div class="radio-nome">Nome Sua Web Rádio</div>
+      <div class="radio-sub">🔴 Ao vivo • 24 horas</div>
+      <div class="tocando">🎵 Tocando agora: <span>${m.musica}</span></div>
+      <div class="play-btn">▶</div>
+      <div class="volume-row">
+        <span style="font-size:.9rem;color:#fff">🔈</span>
+        <div class="volume-bar"><div class="volume-fill"></div></div>
+        <span style="font-size:.9rem;color:#fff">🔊</span>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <div class="social-row">
+        <div class="social-btn"><div class="social-icon s-ig">${svgIG}</div><span class="social-label">Instagram</span></div>
+        <div class="social-btn"><div class="social-icon s-wpp">${svgWPP}</div><span class="social-label">WhatsApp</span></div>
+        <div class="social-btn"><div class="social-icon s-sh">${svgSH}</div><span class="social-label">Compartilhar</span></div>
+      </div>
+      <div class="dots" id="d${i}">${dots(i)}</div>
     </div>`;
-  grid.appendChild(card);
+  slider.appendChild(s);
 });
 
-/* Estrelas para modelo 3 */
-function criaEstrelas(id, qtd) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  for (let i = 0; i < qtd; i++) {
-    const s = document.createElement('div');
-    s.className = 'star';
-    const size = Math.random() * 2.5 + 0.5;
-    s.style.cssText = `width:${size}px;height:${size}px;top:${Math.random()*100}%;left:${Math.random()*100}%;animation-delay:${Math.random()*2}s;animation-duration:${1.5+Math.random()*2}s`;
-    el.appendChild(s);
-  }
-}
-criaEstrelas('stars', 35);
-criaEstrelas('stars2', 35);
+let cur=0;
+const bp=document.getElementById('btnPrev');
+const bn=document.getElementById('btnNext');
 
-/* Partículas rosa para modelo 8 */
-setTimeout(() => {
-  const bg8 = document.querySelector('.bg8');
-  if (bg8) {
-    for (let i = 0; i < 10; i++) {
-      const p = document.createElement('div');
-      p.className = 'particle';
-      const size = Math.random() * 4 + 2;
-      p.style.cssText = `width:${size}px;height:${size}px;background:#f472b6;left:${Math.random()*100}%;bottom:0;animation-duration:${3+Math.random()*4}s;animation-delay:${Math.random()*4}s`;
-      bg8.appendChild(p);
-    }
-  }
-}, 100);
+function goTo(n){
+  cur=Math.max(0,Math.min(TOTAL-1,n));
+  slider.style.transform=`translateX(-${cur*10}%)`;
+  bp.classList.toggle('hidden',cur===0);
+  bn.classList.toggle('hidden',cur===TOTAL-1);
+  document.querySelectorAll('.dots').forEach(d=>{d.innerHTML=dots(cur)});
+}
+
+bp.addEventListener('click',()=>goTo(cur-1));
+bn.addEventListener('click',()=>goTo(cur+1));
+
+let tx=0;
+document.addEventListener('touchstart',e=>{tx=e.touches[0].clientX},{passive:true});
+document.addEventListener('touchend',e=>{const dx=tx-e.changedTouches[0].clientX;if(Math.abs(dx)>40)goTo(cur+(dx>0?1:-1))},{passive:true});
+
+function estrelas(id,q){
+  const el=document.getElementById(id);if(!el)return;
+  for(let i=0;i<q;i++){const s=document.createElement('div');s.className='star';const sz=Math.random()*2+.5;s.style.cssText=`width:${sz}px;height:${sz}px;top:${Math.random()*100}%;left:${Math.random()*100}%;animation-delay:${Math.random()*2}s;animation-duration:${1.5+Math.random()*2}s`;el.appendChild(s);}
+}
+estrelas('sl2',40); estrelas('sl7',30);
+goTo(0);
 </script>
 </body>
 </html>
