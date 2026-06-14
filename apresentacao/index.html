@@ -157,3 +157,31 @@
 </div>
 </body>
 </html>
+<style>
+/* ── Telas pequenas: altura até 700px ou largura até 390px ── */
+@media (max-height: 700px), (max-width: 390px) {
+  .mic-deco svg { width:54px; height:54px; }
+  .badge { font-size:.6rem; padding:5px 14px; margin-bottom:18px; }
+  .titulo { font-size:clamp(1.25rem,5vw,1.8rem); margin-bottom:6px; }
+  .subtitulo { font-size:.78rem; margin-bottom:22px; }
+  .features { gap:9px; margin-bottom:28px; }
+  .feat { padding:12px 8px; border-radius:12px; }
+  .feat-icon { font-size:1.2rem; }
+  .feat-titulo { font-size:.78rem; }
+  .feat-sub { font-size:.6rem; }
+  .btn-cta { font-size:.85rem; padding:14px 26px; }
+  .mic-deco { margin-bottom:16px; }
+}
+/* ── Telas muito pequenas: altura até 600px (ex: Moto G antigo) ── */
+@media (max-height: 600px) {
+  .mic-deco { display:none; }
+  .badge { margin-bottom:10px; }
+  .titulo { font-size:1.2rem; margin-bottom:4px; }
+  .subtitulo { font-size:.72rem; margin-bottom:14px; }
+  .features { gap:7px; margin-bottom:18px; }
+  .feat { padding:9px 6px; }
+  .feat-icon { font-size:1rem; }
+  .feat-titulo { font-size:.72rem; }
+  .feat-sub { display:none; }
+}
+</style>
