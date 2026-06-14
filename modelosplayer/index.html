@@ -259,3 +259,38 @@ goTo(0);
 </script>
 </body>
 </html>
+<style>
+/* ── Telas pequenas: altura até 700px ou largura até 390px ── */
+@media (max-height: 700px), (max-width: 390px) {
+  .slide-header { padding-top:32px; gap:5px; }
+  .modelo-nome { font-size:.58rem; }
+  .contador { font-size:.78rem; padding:4px 12px; }
+  .nav-mini { font-size:.58rem; padding:4px 10px; }
+  .logo-circle { width:82px; height:82px; }
+  .logo-circle svg { width:38px; height:38px; }
+  .radio-nome { font-size:.88rem; }
+  .radio-sub { font-size:.62rem; }
+  .tocando { font-size:.6rem; padding:5px 12px; }
+  .play-btn { width:56px; height:56px; font-size:1.1rem; margin-top:4px; }
+  .volume-row { margin-top:2px; }
+  .volume-bar { width:90px; }
+  .social-icon { width:38px; height:38px; }
+  .social-label { font-size:.5rem; }
+  .social-row { gap:16px; }
+  .slide-footer { padding:8px 20px 22px; gap:10px; }
+  .player-center { gap:7px; }
+}
+/* ── Telas muito pequenas: altura até 600px ── */
+@media (max-height: 600px) {
+  .logo-circle { width:66px; height:66px; }
+  .logo-circle svg { width:30px; height:30px; }
+  .sua-logo { font-size:.5rem; }
+  .radio-nome { font-size:.78rem; letter-spacing:1px; }
+  .tocando { display:none; }
+  .play-btn { width:48px; height:48px; font-size:1rem; }
+  .volume-row { display:none; }
+  .social-icon { width:34px; height:34px; }
+  .slide-footer { padding:6px 16px 16px; gap:8px; }
+  .player-center { gap:5px; }
+}
+</style>
